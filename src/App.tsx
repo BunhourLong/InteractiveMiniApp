@@ -10,7 +10,7 @@ import './App.css'
 type LoadStatus = 'loading' | 'ready' | 'error'
 
 export default function App() {
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<Product[]>(null!)
   const [status, setStatus] = useState<LoadStatus>('loading')
   const [inStockOnly, setInStockOnly] = useState<boolean>(false)
 
