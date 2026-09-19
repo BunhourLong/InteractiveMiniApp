@@ -1,6 +1,6 @@
 # Audit
 
-This file audits the app against two things: the AI-generated validation function, and the project checklist. Line numbers refer to the current `main` branch.
+This file audits the app against two things: the AI-generated validation function, and the project checklist. Line numbers refer to commit `3a6e54c`, before the typing and debugging work. Later commits moved some of this code. For example, the validator now takes a `ProductDraft` and also checks `cost`. See [DEBUGGING_JOURNAL.md](DEBUGGING_JOURNAL.md) for that work.
 
 ## 1. AI-generated validation function
 

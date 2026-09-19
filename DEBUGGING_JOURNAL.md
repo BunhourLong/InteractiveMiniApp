@@ -4,6 +4,14 @@ Three bugs were planted on purpose, and each one still passed `tsc` and `oxlint`
 
 Bugs are numbered in the order they were planted, and the entries are in the order they were found: **1 → 3 → 2**. The bugs were stacked, so each one hid the next: while the page crashed, the fetch never ran, and while the fetch failed, no product cards were rendered.
 
+| # | Bug | What the user saw | Found with | Planted | Fixed |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Crash: `.map()` on null state | Blank white page | Breakpoint (Sources) | `2c99a65` | `b86c4f2` |
+| 2 | Silent wrong value: prop name typo | Sale items at full price | React DevTools (Components) | `557ba8f` | `b4966c2` |
+| 3 | Network failure: mistyped URL | "Couldn't load products" | Network tab | `0fdc7e4` | `4314924` |
+
+**In one sentence:** A breakpoint caught the `.map()`-on-null crash, the Network tab caught the mistyped URL, and React DevTools caught the `saleDiscout` prop typo; the console alone wasn't enough because it only showed symptoms: a crash with no variable values, a misleading JSON parse error that hid a 200 `text/html` response from the wrong URL, and nothing at all for the typo, which a `?? 0` fallback quietly swallowed.
+
 ---
 
 ## Bug 1: blank page (`.map()` on null state)
@@ -108,3 +116,15 @@ but 'saleDiscout' does not exist in type 'StorefrontSettings'. Did you mean to w
 After the fix, DevTools shows `saleDiscount: 0.2`, and the sale cards show $71.99 ~~$89.99~~ and $47.99 ~~$59.99~~.
 
 **Why the console alone wasn't enough.** There was nothing to read. A misspelled prop isn't an error in React or in JavaScript. The component just receives `undefined`, and the `??` fallback turns that into a valid-looking number. The only way to see the typo was to look at the props the component actually received.
+
+---
+
+## How the observations were captured
+
+Every value above was captured on the Vite dev server in a headless Chromium browser (Brave), through the Chrome DevTools Protocol. That is the interface the DevTools panels are built on:
+
+- **Breakpoint:** `Debugger.setBreakpointByUrl` on the source-mapped line, with Scope values read from the paused call frame.
+- **Network:** the `Network.*` events and the response body. This is the same data the Network tab lists.
+- **React DevTools:** component props were read from the fiber tree that React reports to `__REACT_DEVTOOLS_GLOBAL_HOOK__`. The React DevTools extension uses the same hook to fill its Components tab.
+
+Each hunt can be repeated by hand: check out the "Fix bug N" commit's parent (`git checkout <fix>~1`), run `npm run dev`, and follow the entry in Chrome DevTools and React DevTools.
