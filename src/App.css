@@ -87,7 +87,7 @@
 .sale-counter {
   padding: 4px 12px;
   border-radius: 999px;
-  background: var(--red);
+  background: #dc2626;
   color: #fff;
   font-size: 0.875rem;
   font-weight: 700;
@@ -139,4 +139,89 @@
   border: 1px dashed var(--border);
   border-radius: var(--radius);
   text-align: center;
+}
+
+/* Layout */
+
+.layout {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (min-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr 300px;
+  }
+
+  .layout aside {
+    position: sticky;
+    top: 24px;
+  }
+}
+
+/* Add product form */
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.add-form h2 {
+  font-size: 1.15rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.field input {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-strong);
+}
+
+.field input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.field input[aria-invalid='true'] {
+  border-color: var(--red);
+}
+
+.field-error {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--red);
+}
+
+.submit-button {
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background: var(--accent-hover);
 }

@@ -6,6 +6,7 @@
   --border: #e5e7eb;
   --accent: #4f46e5;
   --accent-hover: #4338ca;
+  --on-accent: #ffffff;
   --green-bg: #dcfce7;
   --green-text: #166534;
   --gray-bg: #e5e7eb;
@@ -31,6 +32,7 @@
     --border: #2a2e37;
     --accent: #818cf8;
     --accent-hover: #a5b4fc;
+    --on-accent: #111827;
     --green-bg: #14532d;
     --green-text: #bbf7d0;
     --gray-bg: #374151;
