@@ -1,11 +1,12 @@
+import type { StorefrontSettings } from '../config/storefront'
 import type { PublicProduct } from '../types/product'
 import { formatPrice } from '../utils/formatPrice'
 
-interface ProductCardProps {
+// The settings are optional on a card (no discount by default), but their
+// names come from StorefrontSettings, so the two can't drift apart.
+interface ProductCardProps extends Partial<StorefrontSettings> {
   product: PublicProduct
   onToggleSale: (id: string) => void
-  /** Fraction taken off the price while the product is on sale (0.2 = 20% off). */
-  saleDiscount?: number
 }
 
 export default function ProductCard({ product, onToggleSale, saleDiscount }: ProductCardProps) {

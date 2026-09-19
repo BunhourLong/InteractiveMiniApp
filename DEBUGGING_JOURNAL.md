@@ -74,3 +74,37 @@ Error: GET /api/prodcuts.json returned text/html, not JSON. Check the URL.
 After the fix, the Network tab shows `products.json`, `200`, `application/json`, 666 B.
 
 **Why the console alone wasn't enough.** The console only saw the *last* step: `response.json()` choking on HTML. It never showed the URL that was requested, the status, or what came back, and the 200 status meant `response.ok` was true. The Network tab showed all of that in one row. The misspelled URL was readable at a glance.
+
+---
+
+## Bug 2: sale items show full price (prop name typo)
+
+**Symptom.** With bugs 1 and 3 fixed, everything *looks* right. There are 6 cards, "2 on sale" in the header, and a red **Sale** badge on Wireless Headphones and Ergonomic Mouse. But those two cards show **$89.99** and **$59.99**, their full prices, with no struck-through original. With the 20% store discount, they should be $71.99 and $47.99. The console is **empty**: no error and no warning.
+
+**Tool: React DevTools, Components tab.** The `ProductCard` for Wireless Headphones was selected. Its key is `p-001`, and it is rendered by `ProductGrid ← App`.
+
+**What it showed.** The props panel:
+
+```
+props
+  onToggleSale: ƒ handleToggleSale()
+  product: {id: "p-001", name: "Wireless Headphones", price: 89.99, inStock: true, onSale: true}
+  saleDiscout: 0.2
+```
+
+The card receives `saleDiscout`, which is missing an **n**. It has no `saleDiscount` prop at all. `ProductCard` reads `saleDiscount ?? 0`, so the discount quietly became 0. The other sale card (`p-005`) shows the same thing. `ProductGrid`'s own props (`products`, `onToggleSale`) were fine. So the bad key came from the `{...storefront}` spread that `ProductGrid` adds to every card, and the typo was in `src/config/storefront.ts`.
+
+A side check: `product` has no `cost` key. That confirms `toPublicProduct()` strips the internal field before it reaches a card.
+
+TypeScript didn't catch this because JSX only checks attributes that are written out, like `saleDiscount={0.2}`, for unknown names. Keys that arrive through a `{...spread}` aren't checked. `saleDiscount` is optional, so its absence wasn't an error either.
+
+**Fix.** Rename the key to `saleDiscount`. The object is now declared `satisfies StorefrontSettings`, and `ProductCardProps` now `extends Partial<StorefrontSettings>`, so the prop names come from one type. With the typo put back temporarily, `tsc` now fails:
+
+```
+src/config/storefront.ts(11,3): error TS2561: Object literal may only specify known properties,
+but 'saleDiscout' does not exist in type 'StorefrontSettings'. Did you mean to write 'saleDiscount'?
+```
+
+After the fix, DevTools shows `saleDiscount: 0.2`, and the sale cards show $71.99 ~~$89.99~~ and $47.99 ~~$59.99~~.
+
+**Why the console alone wasn't enough.** There was nothing to read. A misspelled prop isn't an error in React or in JavaScript. The component just receives `undefined`, and the `??` fallback turns that into a valid-looking number. The only way to see the typo was to look at the props the component actually received.
