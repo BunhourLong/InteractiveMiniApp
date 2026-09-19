@@ -4,6 +4,7 @@ import { fetchProducts } from './api/fetchProducts'
 import AddProductForm from './components/AddProductForm'
 import ProductGrid from './components/ProductGrid'
 import type { NewProduct, Product } from './types/product'
+import { toPublicProduct } from './utils/toPublicProduct'
 import './App.css'
 
 type LoadStatus = 'loading' | 'ready' | 'error'
@@ -28,7 +29,10 @@ export default function App() {
     return () => controller.abort()
   }, [])
 
-  const visibleProducts = inStockOnly ? products.filter((product) => product.inStock) : products
+  const publicProducts = products.map(toPublicProduct)
+  const visibleProducts = inStockOnly
+    ? publicProducts.filter((product) => product.inStock)
+    : publicProducts
   const saleCount = visibleProducts.filter((product) => product.onSale).length
 
   function handleInStockChange(e: React.ChangeEvent<HTMLInputElement>) {

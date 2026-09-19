@@ -1,9 +1,9 @@
 import { storefront } from '../config/storefront'
-import type { Product } from '../types/product'
+import type { PublicProduct } from '../types/product'
 import ProductCard from './ProductCard'
 
 interface ProductGridProps {
-  products: Product[]
+  products: readonly PublicProduct[]
   onToggleSale: (id: string) => void
 }
 

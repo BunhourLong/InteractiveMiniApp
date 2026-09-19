@@ -26,6 +26,8 @@ function isProduct(value: unknown): value is Product {
     typeof value.name === 'string' &&
     'price' in value &&
     typeof value.price === 'number' &&
+    'cost' in value &&
+    typeof value.cost === 'number' &&
     'inStock' in value &&
     typeof value.inStock === 'boolean' &&
     'onSale' in value &&

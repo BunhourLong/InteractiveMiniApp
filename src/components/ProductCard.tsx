@@ -1,8 +1,8 @@
-import type { Product } from '../types/product'
+import type { PublicProduct } from '../types/product'
 import { formatPrice } from '../utils/formatPrice'
 
 interface ProductCardProps {
-  product: Product
+  product: PublicProduct
   onToggleSale: (id: string) => void
   /** Fraction taken off the price while the product is on sale (0.2 = 20% off). */
   saleDiscount?: number
