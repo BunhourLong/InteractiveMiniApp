@@ -1,4 +1,6 @@
-export const initialProducts = [
+import type { Product } from '../types/product'
+
+export const initialProducts: Product[] = [
   { id: 'p-001', name: 'Wireless Headphones', price: 89.99, inStock: true, onSale: true },
   { id: 'p-002', name: 'Mechanical Keyboard', price: 129, inStock: true, onSale: false },
   { id: 'p-003', name: 'USB-C Hub', price: 39.5, inStock: false, onSale: false },

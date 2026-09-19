@@ -2,23 +2,24 @@ import { useState } from 'react'
 import AddProductForm from './components/AddProductForm'
 import ProductGrid from './components/ProductGrid'
 import { initialProducts } from './data/products'
+import type { NewProduct, Product } from './types/product'
 import './App.css'
 
 export default function App() {
-  const [products, setProducts] = useState(initialProducts)
+  const [products, setProducts] = useState<Product[]>(initialProducts)
   const [inStockOnly, setInStockOnly] = useState(false)
 
   const visibleProducts = inStockOnly ? products.filter((product) => product.inStock) : products
   const saleCount = visibleProducts.filter((product) => product.onSale).length
 
-  function handleAddProduct(newProduct) {
+  function handleAddProduct(newProduct: NewProduct) {
     setProducts((prev) => [
       ...prev,
       { id: crypto.randomUUID(), ...newProduct, inStock: true, onSale: false },
     ])
   }
 
-  function handleToggleSale(id) {
+  function handleToggleSale(id: string) {
     setProducts((prev) =>
       prev.map((product) => (product.id === id ? { ...product, onSale: !product.onSale } : product)),
     )

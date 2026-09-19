@@ -1,19 +1,25 @@
-import { useState } from 'react'
+import { useState, type ChangeEvent, type SubmitEvent } from 'react'
+import type { NewProduct, ProductFormData, ProductFormErrors } from '../types/product'
 import { validateProduct } from '../utils/validateProduct'
 
-const emptyForm = { name: '', price: '' }
+interface AddProductFormProps {
+  onAdd: (product: NewProduct) => void
+}
 
-export default function AddProductForm({ onAdd }) {
-  const [form, setForm] = useState(emptyForm)
-  const [errors, setErrors] = useState({})
+const emptyForm: ProductFormData = { name: '', price: '' }
 
-  function handleChange(e) {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
-    setErrors((prev) => ({ ...prev, [name]: undefined }))
+export default function AddProductForm({ onAdd }: AddProductFormProps) {
+  const [form, setForm] = useState<ProductFormData>(emptyForm)
+  const [errors, setErrors] = useState<ProductFormErrors>({})
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    const field = e.target.name as keyof ProductFormData
+    const { value } = e.target
+    setForm((prev) => ({ ...prev, [field]: value }))
+    setErrors((prev) => ({ ...prev, [field]: undefined }))
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     const validationErrors = validateProduct(form)
     setErrors(validationErrors)

@@ -1,3 +1,5 @@
+import type { ProductFormData, ProductFormErrors } from '../types/product'
+
 /**
  * Validates the "Add product" form values.
  *
@@ -6,8 +8,8 @@
  * alert() — the caller passes the result to setErrors so the messages render
  * inline next to each field. An empty object means the form is valid.
  */
-export function validateProduct(form) {
-  const errors = {}
+export function validateProduct(form: ProductFormData): ProductFormErrors {
+  const errors: ProductFormErrors = {}
   const name = form.name.trim()
   const price = form.price.trim()
 

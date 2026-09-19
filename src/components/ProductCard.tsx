@@ -1,6 +1,12 @@
+import type { Product } from '../types/product'
 import { formatPrice } from '../utils/formatPrice'
 
-export default function ProductCard({ product, onToggleSale }) {
+interface ProductCardProps {
+  product: Product
+  onToggleSale: (id: string) => void
+}
+
+export default function ProductCard({ product, onToggleSale }: ProductCardProps) {
   return (
     <li className="product-card">
       <div className="badges">
