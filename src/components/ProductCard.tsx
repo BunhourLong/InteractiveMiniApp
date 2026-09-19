@@ -4,9 +4,14 @@ import { formatPrice } from '../utils/formatPrice'
 interface ProductCardProps {
   product: Product
   onToggleSale: (id: string) => void
+  /** Fraction taken off the price while the product is on sale (0.2 = 20% off). */
+  saleDiscount?: number
 }
 
-export default function ProductCard({ product, onToggleSale }: ProductCardProps) {
+export default function ProductCard({ product, onToggleSale, saleDiscount }: ProductCardProps) {
+  const discount = product.onSale ? (saleDiscount ?? 0) : 0
+  const price = product.price * (1 - discount)
+
   return (
     <li className="product-card">
       <div className="badges">
@@ -16,7 +21,10 @@ export default function ProductCard({ product, onToggleSale }: ProductCardProps)
         {product.onSale && <span className="badge badge-sale">Sale</span>}
       </div>
       <h2 className="product-name">{product.name}</h2>
-      <p className="product-price">{formatPrice(product.price)}</p>
+      <p className="product-price">
+        {formatPrice(price)}
+        {discount > 0 && <s className="product-price-was">{formatPrice(product.price)}</s>}
+      </p>
       <button
         type="button"
         className="sale-toggle"

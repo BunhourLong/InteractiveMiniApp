@@ -1,3 +1,4 @@
+import { storefront } from '../config/storefront'
 import type { Product } from '../types/product'
 import ProductCard from './ProductCard'
 
@@ -12,7 +13,12 @@ export default function ProductGrid({ products, onToggleSale }: ProductGridProps
   ) : (
     <ul className="product-grid">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} onToggleSale={onToggleSale} />
+        <ProductCard
+          key={product.id}
+          product={product}
+          onToggleSale={onToggleSale}
+          {...storefront}
+        />
       ))}
     </ul>
   )
