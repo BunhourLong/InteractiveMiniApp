@@ -1,13 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { fetchProducts } from './api/fetchProducts'
 import AddProductForm from './components/AddProductForm'
 import ProductGrid from './components/ProductGrid'
-import { initialProducts } from './data/products'
 import type { NewProduct, Product } from './types/product'
 import './App.css'
 
+type LoadStatus = 'loading' | 'ready' | 'error'
+
 export default function App() {
-  const [products, setProducts] = useState<Product[]>(initialProducts)
+  const [products, setProducts] = useState<Product[]>([])
+  const [status, setStatus] = useState<LoadStatus>('loading')
   const [inStockOnly, setInStockOnly] = useState(false)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    fetchProducts(controller.signal)
+      .then((loaded) => {
+        setProducts(loaded)
+        setStatus('ready')
+      })
+      .catch((error) => {
+        if (controller.signal.aborted) return
+        console.error(error)
+        setStatus('error')
+      })
+    return () => controller.abort()
+  }, [])
 
   const visibleProducts = inStockOnly ? products.filter((product) => product.inStock) : products
   const saleCount = visibleProducts.filter((product) => product.onSale).length
@@ -29,23 +47,35 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <h1>Product Catalog</h1>
-        <p className="product-count">
-          {visibleProducts.length} {visibleProducts.length === 1 ? 'product' : 'products'}
-        </p>
+        {status === 'ready' && (
+          <p className="product-count">
+            {visibleProducts.length} {visibleProducts.length === 1 ? 'product' : 'products'}
+          </p>
+        )}
         {saleCount > 0 && <span className="sale-counter">{saleCount} on sale</span>}
       </header>
 
       <div className="layout">
         <main>
-          <label className="filter">
-            <input
-              type="checkbox"
-              checked={inStockOnly}
-              onChange={(e) => setInStockOnly(e.target.checked)}
-            />
-            In stock only
-          </label>
-          <ProductGrid products={visibleProducts} onToggleSale={handleToggleSale} />
+          {status === 'loading' && <p className="status">Loading products…</p>}
+          {status === 'error' && (
+            <p className="status status-error" role="alert">
+              Couldn’t load products. Check your connection and reload the page.
+            </p>
+          )}
+          {status === 'ready' && (
+            <>
+              <label className="filter">
+                <input
+                  type="checkbox"
+                  checked={inStockOnly}
+                  onChange={(e) => setInStockOnly(e.target.checked)}
+                />
+                In stock only
+              </label>
+              <ProductGrid products={visibleProducts} onToggleSale={handleToggleSale} />
+            </>
+          )}
         </main>
 
         <aside>

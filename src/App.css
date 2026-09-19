@@ -134,11 +134,22 @@
   cursor: pointer;
 }
 
-.empty-state {
+.empty-state,
+.status {
   padding: 32px;
   border: 1px dashed var(--border);
   border-radius: var(--radius);
   text-align: center;
+}
+
+.status {
+  margin: 0;
+}
+
+.status-error {
+  border-color: var(--red);
+  background: var(--red-bg);
+  color: var(--red);
 }
 
 /* Layout */
