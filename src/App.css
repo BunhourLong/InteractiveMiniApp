@@ -73,3 +73,70 @@
   background: var(--gray-bg);
   color: var(--gray-text);
 }
+
+.badges {
+  display: flex;
+  gap: 6px;
+}
+
+.badge-sale {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.sale-counter {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.sale-toggle {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-strong);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.sale-toggle:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.sale-toggle[aria-pressed='true'] {
+  border-color: var(--red);
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+/* Filter */
+
+.filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-weight: 500;
+  color: var(--text-strong);
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.empty-state {
+  padding: 32px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
