@@ -1,4 +1,5 @@
-import { useState, type ChangeEvent, type SubmitEvent } from 'react'
+import { useState } from 'react'
+import type * as React from 'react'
 import type { NewProduct, ProductFormData, ProductFormErrors } from '../types/product'
 import { validateProduct } from '../utils/validateProduct'
 
@@ -12,14 +13,17 @@ export default function AddProductForm({ onAdd }: AddProductFormProps) {
   const [form, setForm] = useState<ProductFormData>(emptyForm)
   const [errors, setErrors] = useState<ProductFormErrors>({})
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    const field = e.target.name as keyof ProductFormData
-    const { value } = e.target
-    setForm((prev) => ({ ...prev, [field]: value }))
-    setErrors((prev) => ({ ...prev, [field]: undefined }))
+  // One handler per field, keyed by a real form field name, so a typo like
+  // handleChange('prcie') is a compile error instead of a silent no-op.
+  function handleChange(field: keyof ProductFormData) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target
+      setForm((prev) => ({ ...prev, [field]: value }))
+      setErrors((prev) => ({ ...prev, [field]: undefined }))
+    }
   }
 
-  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     const validationErrors = validateProduct(form)
     setErrors(validationErrors)
@@ -41,7 +45,7 @@ export default function AddProductForm({ onAdd }: AddProductFormProps) {
           type="text"
           placeholder="e.g. Desk Lamp"
           value={form.name}
-          onChange={handleChange}
+          onChange={handleChange('name')}
           aria-invalid={Boolean(errors.name)}
           aria-describedby={errors.name ? 'product-name-error' : undefined}
         />
@@ -61,7 +65,7 @@ export default function AddProductForm({ onAdd }: AddProductFormProps) {
           inputMode="decimal"
           placeholder="e.g. 24.99"
           value={form.price}
-          onChange={handleChange}
+          onChange={handleChange('price')}
           aria-invalid={Boolean(errors.price)}
           aria-describedby={errors.price ? 'product-price-error' : undefined}
         />

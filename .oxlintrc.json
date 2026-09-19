@@ -6,6 +6,7 @@
     "react/only-export-components": ["warn", { "allowConstantExport": true }],
     "react/jsx-key": "error",
     "react/no-array-index-key": "error",
-    "no-alert": "error"
+    "no-alert": "error",
+    "typescript/no-explicit-any": "error"
   }
 }

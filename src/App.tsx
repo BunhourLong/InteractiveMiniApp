@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type * as React from 'react'
 import { fetchProducts } from './api/fetchProducts'
 import AddProductForm from './components/AddProductForm'
 import ProductGrid from './components/ProductGrid'
@@ -10,7 +11,7 @@ type LoadStatus = 'loading' | 'ready' | 'error'
 export default function App() {
   const [products, setProducts] = useState<Product[]>([])
   const [status, setStatus] = useState<LoadStatus>('loading')
-  const [inStockOnly, setInStockOnly] = useState(false)
+  const [inStockOnly, setInStockOnly] = useState<boolean>(false)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -19,7 +20,7 @@ export default function App() {
         setProducts(loaded)
         setStatus('ready')
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         if (controller.signal.aborted) return
         console.error(error)
         setStatus('error')
@@ -29,6 +30,10 @@ export default function App() {
 
   const visibleProducts = inStockOnly ? products.filter((product) => product.inStock) : products
   const saleCount = visibleProducts.filter((product) => product.onSale).length
+
+  function handleInStockChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setInStockOnly(e.target.checked)
+  }
 
   function handleAddProduct(newProduct: NewProduct) {
     setProducts((prev) => [
@@ -66,11 +71,7 @@ export default function App() {
           {status === 'ready' && (
             <>
               <label className="filter">
-                <input
-                  type="checkbox"
-                  checked={inStockOnly}
-                  onChange={(e) => setInStockOnly(e.target.checked)}
-                />
+                <input type="checkbox" checked={inStockOnly} onChange={handleInStockChange} />
                 In stock only
               </label>
               <ProductGrid products={visibleProducts} onToggleSale={handleToggleSale} />
